@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.inhatc.spring.member.mapper.memberMapper">
+	<select id="memberList"
+		resultType="kr.inhatc.spring.member.dto.MemberDto">
+		SELECT name, email, memberid, TO_CHAR(joindate,
+		'yyyy-mm-dd') AS joindate
+		FROM T_MEMBER
+	</select>
+
+	<insert id="memberInsert"
+		parameterType="kr.inhatc.spring.member.dto.MemberDto">
+		INSERT INTO T_MEMBER(MEMBERID, EMAIL, JOINDATE, NAME,
+		PW, "ROLE")
+		VALUES(#{memberid}, #{email}, sysdate, #{name}, #{pw},
+		#{role})
+	</insert>
+
+	<select id="memberDetail" parameterType="String"
+		resultType="kr.inhatc.spring.member.dto.MemberDto">
+		SELECT name, email, memberid,pw,role, TO_CHAR(joindate,
+		'yyyy-mm-dd') AS
+		joindate
+		FROM T_MEMBER
+		WHERE enabled = 'n' AND memberid
+		= #{memberid}
+	</select>
+	<update id="memberUpdate"
+		parameterType="kr.inhatc.spring.member.dto.MemberDto">
+		UPDATE t_member
+		SET pw = #{pw},
+		name = #{name},
+		email =
+		#{email},
+		role = #{role}
+		WHERE memberid = #{memberid}
+	</update>
+
+	<delete id="memberDelete" parameterType="String">
+		DELETE FROM t_member
+		WHERE memberid = #{memberid}
+	</delete>
+
+	<insert id="memberFileInsert"
+		parameterType="kr.inhatc.spring.member.dto.FileDto">
+		INSERT INTO HR.T_MFILE
+		(
+		IDX,
+		MEMBERID,
+		ORIGINAL_FILE_NAME,
+		STORED_FILE_PATH,
+		FILE_SIZE,
+		CREATOR_ID,
+		CREATE_DATETIME)
+		SELECT file_seq.nextval, A.* FROM(
+		<foreach item="item" collection="list" separator="UNION ALL ">
+			SELECT #{item.memberid} as memberid,
+			#{item.originalFileName} as original_file_name,
+			#{item.storedFilePath} as stored_file_path,
+			#{item.fileSize} as file_size,
+			'admin',
+			sysdate
+			FROM DUAL
+		</foreach>
+		) A
+	</insert>
+	<select id = "selectMemberFileList" parameterType="String" resultType="kr.inhatc.spring.member.dto.FileDto">
+   		SELECT idx, memberid, original_file_name, ROUND(file_size/1024) as file_size
+   		FROM t_mfile
+   		WHERE memberid = #{memberid} AND enabled = 'N'
+   </select>
+   
+   <select id="selectFileInfo" parameterType="map" resultType="kr.inhatc.spring.member.dto.FileDto">
+   		SELECT original_file_name, stored_file_path, file_size
+   		FROM t_mfile
+   		WHERE idx = #{idx} AND memberid = #{memberid} AND enabled ='N'
+   </select>
+</mapper>

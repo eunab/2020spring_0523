@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>게시판 리스트</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"></link>
+</head>
+<body>
+	<div class="container">
+		<h2>게시판 목록</h2>
+		<table class="board_list">
+			<colgroup>
+				<col width="15%" />
+				<col width="*" />
+				<col width="15%" />
+				<col width="20%" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th scope="col">글 번 호</th>
+					<th scope="col">제목</th>
+					<th scope="col">조회수</th>
+					<th scope="col">작 성 일</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${#lists.size(list)} > 0" th:each="vo : ${list}">
+					<td th:text="${vo.boardIdx}"></td>
+					<td class="title"><a href="/board/boardDetail?boardIdx="
+						th:attrappend="href=${vo.boardIdx}" th:text="${vo.title}"></a></td>
+					<td th:text="${vo.hitCnt}"></td>
+					<td th:text="${vo.CreateDatetime}"></td>
+				</tr>
+				<tr th:unless="${#lists.size(list)} > 0">
+					<td colspan="4">조회된 겨로가가 없습니다.</td>
+			</tbody>
+		</table>
+		<a href="/board/boardWrite" class="btn">글 쓰 기 </a>
+	</div>
+</body>
+</html>

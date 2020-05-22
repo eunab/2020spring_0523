@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="ture">
+	<!-- debug용 -->
+	<appender name = "console" class = "ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<Pattern>%d %5p [%c] %m%n</Pattern>
+		</encoder>
+	</appender>
+	
+	<!-- info용 -->
+	<appender name = "console-infolog" class = "ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<!--  <Pattern>%d %5p [%c] %m%n</Pattern>-->
+			<Pattern>[%5p] [%c]\n %m%n</Pattern>
+		</encoder>
+	</appender>
+	
+	<!-- 로거 -->
+	<logger name="board" level="DEBUG" appender-ref="console"/>
+	<!-- sql보여주기 -->
+	<logger name = "jdbc.sqlonly" level="INFO" appender.ref="console-infolog"/>
+	<logger name="jdbc.resultsettable" level="INFO" appender-ref="console-infolog"/>
+	
+	<!-- 루트 로거 -->
+	<root level="DEBUG">
+		<appender-ref ref="console"/>
+	</root>
+</configuration>
